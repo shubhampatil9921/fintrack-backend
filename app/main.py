@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.health import router as health_router
+
 app = FastAPI(
     title="FinTrack API",
     description="Personal Finance Management API",
@@ -21,6 +23,8 @@ def root():
     return {"message": "Welcome to FinTrack API"}
 
 
-@app.get("/api/v1/health")
-def health_check():
-    return {"status": "healthy"}
+app.include_router(
+    health_router,
+    prefix="/api/v1",
+    tags=["Health"],
+)
