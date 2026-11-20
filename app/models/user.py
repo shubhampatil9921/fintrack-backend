@@ -13,16 +13,29 @@ class User(Base):
 
     name: Mapped[str] = mapped_column(String(100), nullable=False)
 
-    email: Mapped[str] = mapped_column(
+    username: Mapped[str | None] = mapped_column(
+        String(50),
+        unique=True,
+        index=True,
+        nullable=True,
+    )
+
+    email: Mapped[str | None] = mapped_column(
         String(255),
         unique=True,
         index=True,
-        nullable=False,
+        nullable=True,
     )
 
-    password_hash: Mapped[str] = mapped_column(
+    password_hash: Mapped[str | None] = mapped_column(
         String(255),
-        nullable=False,
+        nullable=True,
+    )
+
+    auth_providers = relationship(
+        "UserAuthProvider",
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
 
     is_active: Mapped[bool] = mapped_column(
@@ -40,3 +53,4 @@ class User(Base):
     categories = relationship("Category", back_populates="user")
     transactions = relationship("Transaction", back_populates="user")
     budgets = relationship("Budget", back_populates="user")
+    refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan",)
